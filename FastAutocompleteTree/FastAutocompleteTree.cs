@@ -9,13 +9,27 @@ namespace FastAutocompleteTree
     {
         private Node Head = new Node();
         private List<string> dictionary;
+        //Zrobic wyszukiwanie dla oddzielnych slow tez w danym wyrazeniu
+        // poprostu rozdzielic po spacji i dawac te slowa z tym samym indeksem w slowniku
 
-        public FastAutocompleteTree(IEnumerable<string> dictionary)
+        public FastAutocompleteTree(IEnumerable<string> dictionary, bool searchByWordsInExpression = false)
         {
             this.dictionary = dictionary.OrderBy(s => s.ToLower()).ToList();
             for(int i=0; i< this.dictionary.Count; i++)
             {
-                this.Insert(this.dictionary[i], i);
+                //splits expression, and inserts word to serach tree so we can get results by words in expression not just by prefix of expression
+                if (searchByWordsInExpression)
+                {
+                    var words = this.dictionary[i].Split(' ');
+                    foreach(var word in words)
+                    {
+                        this.Insert(word, i); //all words for same index as we want to get this expression
+                    }
+                }
+                else
+                {
+                    this.Insert(this.dictionary[i], i);
+                }
             }
         }
 
